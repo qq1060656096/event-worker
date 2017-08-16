@@ -1,0 +1,30 @@
+{
+  "name": "wei/event-work",
+  "type": "library",
+  "description": "brief-db library for PHP",
+  "keywords": ["cqrs", "event work", "cli", "simple queue"],
+  "license": "BSD",
+  "autoload": {
+    "psr-4":{
+      "Wei\\EventWork\\":"lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Wei\\EventWork\\Tests\\": "tests"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/qq1060656096/brief-db.git"
+    }
+  ],
+  "require": {
+    "wei/brief-db": "dev-develop as ~1",
+    "hassankhan/config": "0.10.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.4.*"
+  }
+}
