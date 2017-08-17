@@ -21,7 +21,7 @@
     }
   ],
   "require": {
-    "wei/brief-db": "dev-develop as ~1",
+    "wei/brief-db": "dev-develop as 1.0.5",
     "hassankhan/config": "0.10.0"
   },
   "require-dev": {
