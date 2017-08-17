@@ -1,0 +1,27 @@
+# 事件列表
+event_lists:
+  app_create: 1 # 创建应用
+  app_start: 2 # 启动应用
+  app_stop: 3 # 停止应用
+  app_delete: 4 # 删除应用
+  app_install_sql: 5 # 导入SQL,到mysql应用中
+  app_backup: 6 # 备份应用
+#  ------ 分割线 -------
+# 模块列表
+module_lists:
+  demo_module: # docker 模块
+    id: 1 # 必须唯一
+    class: \Wei\EventWork\Demo\DemoCustomer # 调用类
+    callback: callMethod # 调用方法
+    listen_event_lists: # 监听事件列表
+      - app_create
+      - app_start
+      - app_stop
+      - app_delete
+  shop_install_back_module: # saas平台店铺安装备份,因为比较耗费资源所以放在单独模块
+    id: # 必须唯一
+    class: ShopInstallBackCustomer # 调用类
+    callBack: installBack # 调用方法
+    listen_event_lists: # 监听事件列表
+      - app_install_sql
+      - app_backup
