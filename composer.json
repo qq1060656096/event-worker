@@ -1,8 +1,8 @@
 {
-  "name": "wei/event-work",
+  "name": "wei/event-worker",
   "type": "library",
   "description": "brief-db library for PHP",
-  "keywords": ["cqrs", "event work", "cli", "simple queue"],
+  "keywords": ["cqrs", "event worker", "cli", "simple queue"],
   "license": "BSD",
   "autoload": {
     "psr-4":{
@@ -21,8 +21,8 @@
     }
   ],
   "require": {
-    "wei/brief-db": "dev-develop as ~1",
-    "hassankhan/config": "0.10.0"
+    "wei/brief-db": "~1",
+    "hassankhan/config": "0.10.*"
   },
   "require-dev": {
     "phpunit/phpunit": "5.4.*"
