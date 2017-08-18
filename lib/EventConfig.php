@@ -112,4 +112,24 @@ class EventConfig
         $bool = empty(self::getModule($moduleKey)['listen_event_lists']);
         return $bool ? self::getEventLists() : self::getModule($moduleKey)['listen_event_lists'];
     }
+
+
+    /**
+     * 获取计划任务列表
+     * @return string
+     */
+    public static function getCronLists()
+    {
+        return self::getConfigInstance()->get('cron_lists');
+    }
+
+    /**
+     * 获取计划任务class
+     * @param string $moduleKey 模块key
+     * @return string
+     */
+    public static function getCronClass($cronKey)
+    {
+        return self::getCronLists()[$cronKey]['class'];
+    }
 }

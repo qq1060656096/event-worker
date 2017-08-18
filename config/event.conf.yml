@@ -9,7 +9,7 @@ event_lists:
 #  ------ 分割线 -------
 # 模块列表
 module_lists:
-  demo_module: # docker 模块
+  demo_module: # docker 模块(模块名必须唯一)
     id: 1 # 必须唯一
     class: \Wei\EventWork\Demo\DemoCustomer # 调用类
     callback: callMethod # 调用方法
@@ -19,9 +19,14 @@ module_lists:
       - app_stop
       - app_delete
   shop_install_back_module: # saas平台店铺安装备份,因为比较耗费资源所以放在单独模块
-    id: # 必须唯一
+    id: 2 # 必须唯一
     class: ShopInstallBackCustomer # 调用类
     callBack: installBack # 调用方法
     listen_event_lists: # 监听事件列表
       - app_install_sql
       - app_backup
+#  ------ 分割线 -------
+# 计划任务列表
+cron_lists:
+  demo_cron: # cron 计划任务名字唯一
+    class: \Wei\EventWork\Demo\DemoCron # 调用类
