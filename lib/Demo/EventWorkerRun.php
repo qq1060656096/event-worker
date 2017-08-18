@@ -1,6 +1,6 @@
 <?php
 
-$demo = '[demo:php lib/demo/EventWorkerCron.php demo_module vendor/autoload.php]';
+$demo = '[demo:php lib/demo/EventWorkerRun.php demo_module vendor/autoload.php]';
 switch (true) {
     // 参数错误
     case empty($argv[1]):
