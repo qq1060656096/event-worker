@@ -1,10 +1,17 @@
-# event-work
-=======
 # Event Worker
-> 业务经常的变动，经常增减活动，导致开发修改现有的业务逻辑，造成程序很混乱，质量无法保证。
+
+> 业务频繁的变动，频繁增减活动，导致开发修改现有的业务逻辑，造成程序很混乱，质量无法保证。
 也导致测试进行了大量重复而不必要测测试,从而浪费大量的人力成本,而不能有预期到结果。
 
-## 使用场景
+### 注意
+> Event Worker 当前版本只针对中小型企业，因为部署简单，你可以快速的安装使用。
+> 之后会有 Event Worker RabbitMQ 就是针对大型企业，高并发业务场景。
+
+## 使用场景 
+> 1. 主要务不变，一些像活动、注册、登录、购买送积分、发短信等
+> 2. saas平台使用为每个客户部署环境，很多公司用docker 快速部署环境，环境创建后会导入sql，但是可能创建成功事件不确定，我们可以发送一个import_event
+事件来解决这个问题
+
 ### 案例:
 
 ##### 1. 用户注册
@@ -31,7 +38,8 @@
 ![版本1流程图](dev/images/1.x/1.x-flow-diagram.png)
 
 
-## Event Worker使用示例
+## Event Worker使用demo[Event-Worker-Simple](https://github.com/qq1060656096/event-worker-simple/tree/develop)
+
 
 # 事件发送demo
 ```php
@@ -41,7 +49,7 @@ $sendData = [
     'quantity' => 10,// 购买数量
     'couponId' => 0,// 优惠券id
     'uid' => 10,//购买用户
-];
+]; 
 //发送产品购买事件
 \Wei\EventWork\EventSend::send('product_buy', $sendData);
 ```
