@@ -38,10 +38,22 @@
 ![版本1流程图](dev/images/1.x/1.x-flow-diagram.png)
 
 
+> 事件发送demo
+```php
+<?php
+$sendData = [
+    'productId' => 1,// 购买产品id
+    'quantity' => 10,// 购买数量
+    'couponId' => 0,// 优惠券id
+    'uid' => 10,//购买用户
+]; 
+// 用户购买产品
+\Zwei\EventWork\EventSend::send('BUY_PRODUCT', $data);
+```
+
 ## Event Worker使用demo[Event-Worker-Simple](https://github.com/qq1060656096/event-worker-simple/tree/develop)
 
-
-## 使用示例(use)
+## 项目使用示例(use)
 > 1. 我们在"D:\phpStudy\WWW\php7\demo"文件夹下中创建"event-worker-simple"文件夹作为我们我项目目录
 > 2. 现在我们已经创建好了"D:\phpStudy\WWW\php7\demo\event-worker-simple"文件夹
 > 3. 创建数据库连接配置文件"config/bao-loan.yml"并加入以下内容
@@ -67,7 +79,7 @@ events:
 # 模块列表
 modules:
   user_buy_module: # docker 模块
-    class: "\\Zwei\\EventWorkSimple\\Customer" # 调用类
+    class: "\\Zwei\\EventWorkSimple\\Customer\\DemoCustomer" # 调用类
     callback_func: "run" # 调用方法
     listen_events: # 监听事件列表
       - BUY_PRODUCT
@@ -78,22 +90,22 @@ modules:
 {
   "autoload": {
     "psr-4":{
-      "Wei\\EventWorkSimple\\":"src/"
+      "Zwei\\EventWorkSimple\\":"src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Wei\\EventWorkSimple\\Tests\\": "tests"
+      "Zwei\\EventWorkSimple\\Tests\\": "tests"
     }
   },
   "repositories": [
-      {
-          "type": "vcs",
-          "url": "https://github.com/qq1060656096/event-worker.git"
-      }
+    {
+      "type": "vcs",
+      "url": "https://github.com/qq1060656096/event-worker.git"
+    }
   ],
   "require": {
-      "zwei/event-worker": "dev-master"
+    "zwei/event-worker": "dev-master"
   }
 }
 ```
@@ -111,23 +123,82 @@ switch (true) {
         break;
     // 请传入引入composer autoload.php
     case empty($argv[2]):
-        $composerAutoload = \Zwei\ComposerVendorDirectory\ComposerVendor::getDir().'/autoload.php';
-        if (!file_exists($composerAutoload)) {
-            $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
-            throw new Exception($errorMsg);
-        }
+        $composerAutoload = $argv[2];
+        $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
+        throw new Exception($errorMsg);
         break;
     default:
         list($moduleName, $composerAutoload) = [$argv[1], $argv[2]];
         break;
 }
 require $composerAutoload;
+
 \Zwei\EventWork\EventWorker::run($moduleName);
+```
+
+> 8. 创建测试发送事件脚本"src/TestSendEvent.php"文件并加入以下内容
+```php
+<?php
+
+switch (true) {
+    // 参数错误
+    case empty($argv[1]):
+        throw new \Exception('The event name cannot be empty.');
+        break;
+    // 请传入引入composer autoload.php
+    case empty($argv[4]):
+        $composerAutoload = $argv[4];
+        $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
+        throw new Exception($errorMsg);
+        break;
+    default:
+        $composerAutoload = $argv[4];
+        $times      = !isset($argv[2]) ? 10 : intval($argv[2]);
+        $times      = max($times, 0);
+        $sleepTime  = !isset($argv[3]) ? 10 : intval($argv[3]);
+        $sleepTime  = max($sleepTime, 0);
+        $eventName   = $argv[1];
+        break;
+}
+require $composerAutoload;
+$nowDate = date('Y-m-d H:i:s');
+echo <<<str
+send test event
+eventKey: {$eventName} 
+time: {$nowDate}
+run demo start: 
+# 运行10次间隔1秒
+php src/TestSendEvent.php BUY_PRODUCT 10 1 vendor/autoload.php
+# 一直运行间隔1秒
+php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php
+# 一直运行不间隔
+php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php
+run demo end:
+str;
+$i = 0;
+while (true) {
+    if ($i > $times && $times != 0) {
+        break;
+    }
+    $sendData = [
+        'i' => $i,
+        'eventName' => $eventName,
+        'times' =>$times,
+        'sleepTime' => $sleepTime
+    ];
+    echo "$i \n";
+    //发送事件
+    \Zwei\EventWork\EventSend::send($eventName, $sendData);
+    $sleepTime > 0 ? sleep($sleepTime) : null;
+    $i ++;
+}
 ```
 
 > 8. 创建模块消费者"src/Customer/DemoCustomer.php"监听模块事件
 ```php
 <?php
+namespace Zwei\EventWorkSimple\Customer;
+
 /**
  * 测试消费者
  * Class DemoCustomer
@@ -148,6 +219,7 @@ class DemoCustomer
         return true;
     }
 }
+
 ```
 
 > 9. 运行事件消费者脚本
@@ -155,18 +227,16 @@ class DemoCustomer
 php src/EventWorkerRun.php 模块名 vendor/autoload.php
 php src/EventWorkerRun.php user_buy_module vendor/autoload.php
 
-> 10. 创建测试发送使事件"src/TestSendEvent.php"文件并加入以下内容
-```php
-<?php
-$sendData = [
-    'productId' => 1,// 购买产品id
-    'quantity' => 10,// 购买数量
-    'couponId' => 0,// 优惠券id
-    'uid' => 10,//购买用户
-]; 
-// 用户购买产品
-\Zwei\EventWork\EventSend::send('BUY_PRODUCT', $data);
-```
+> 10. 运行发送测试事件
+
+php src/TestSendEvent.php 事件名 运行次数(0一直运行) 间隔多少秒 vendor/autoload.php
+php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php # 一直运行不间隔
+
+
+运行发送事件测试
+
+# 一直运行间隔1秒
+php lib/DemoSendEvent.php demo_event 0 1
 
 # 单元测试使用
 
