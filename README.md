@@ -55,7 +55,9 @@ $sendData = [
 
 ## 项目使用示例(use)
 > 1. 我们在"D:\phpStudy\WWW\php7\demo"文件夹下中创建"event-worker-simple"文件夹作为我们我项目目录
-> 2. 现在我们已经创建好了"D:\phpStudy\WWW\php7\demo\event-worker-simple"文件夹
+>现在我们已经创建好了"D:\phpStudy\WWW\php7\demo\event-worker-simple"文件夹
+
+> 2. 导入sql文件"dev/sql/event.sql"到数据库中
 > 3. 创建数据库连接配置文件"config/bao-loan.yml"并加入以下内容
 
 ```yml

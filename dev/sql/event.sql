@@ -13,8 +13,6 @@ File Encoding         : 65001
 Date: 2017-08-17 00:36:08
 */
 
-SET FOREIGN_KEY_CHECKS=0;
-
 -- ----------------------------
 -- Table structure for event_log
 -- ----------------------------
