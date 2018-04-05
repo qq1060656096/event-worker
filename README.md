@@ -42,8 +42,8 @@
 
 
 ## 使用示例(use)
-> 1. 我们在"D:\phpStudy\WWW\php7"文件夹下中创建"event-demo"文件夹作为我们我项目目录
-> 2. 现在我们已经创建好了"D:\phpStudy\WWW\php7\event-demo"文件夹
+> 1. 我们在"D:\phpStudy\WWW\php7\demo"文件夹下中创建"event-worker-simple"文件夹作为我们我项目目录
+> 2. 现在我们已经创建好了"D:\phpStudy\WWW\php7\demo\event-worker-simple"文件夹
 > 3. 创建数据库连接配置文件"config/bao-loan.yml"并加入以下内容
 
 ```yml
@@ -67,7 +67,7 @@ events:
 # 模块列表
 modules:
   user_buy_module: # docker 模块
-    class: "\\Zwei\\EventWork\\Tests\\Demo\\DockerModule" # 调用类
+    class: "\\Zwei\\EventWorkSimple\\Customer" # 调用类
     callback_func: "run" # 调用方法
     listen_events: # 监听事件列表
       - BUY_PRODUCT
@@ -76,21 +76,31 @@ modules:
 > 5. 在项目目录下创建"composer.json"文件并加入以下内容
 ```json
 {
-	"repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/qq1060656096/event-worker.git"
-        }
-    ],
-	"require": {
-		"zwei/event-work": "dev-1.1.dev"
-	}
+  "autoload": {
+    "psr-4":{
+      "Wei\\EventWorkSimple\\":"src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Wei\\EventWorkSimple\\Tests\\": "tests"
+    }
+  },
+  "repositories": [
+      {
+          "type": "vcs",
+          "url": "https://github.com/qq1060656096/event-worker.git"
+      }
+  ],
+  "require": {
+      "zwei/event-worker": "dev-master"
+  }
 }
 ```
 
 > 6. 执行"composer install"安装
 
-> 7. 创建"EventWorkerRun.php"并加入以下内容
+> 7. 创建运行模块监听事件"src/EventWorkerRun.php"文件并加入以下内容
 ```php
 <?php
 
@@ -115,7 +125,37 @@ require $composerAutoload;
 \Zwei\EventWork\EventWorker::run($moduleName);
 ```
 
-> 8. 创建"sendEvent.php"并加入以下内容
+> 8. 创建模块消费者"src/Customer/DemoCustomer.php"监听模块事件
+```php
+<?php
+/**
+ * 测试消费者
+ * Class DemoCustomer
+ * @package Zwei\EventWorkSimple\Customer
+ */
+class DemoCustomer
+{
+    /**
+     * 监听模块事件
+     * @param string $evenName 事件名
+     * @param array $event 事件
+     * @return bool 执行成功,执行失败
+     */
+    public function run($evenName, $event){
+        echo 123;
+        var_dump($evenName);
+        print_r($event);
+        return true;
+    }
+}
+```
+
+> 9. 运行事件消费者脚本
+
+php src/EventWorkerRun.php 模块名 vendor/autoload.php
+php src/EventWorkerRun.php user_buy_module vendor/autoload.php
+
+> 10. 创建测试发送使事件"src/TestSendEvent.php"文件并加入以下内容
 ```php
 <?php
 $sendData = [

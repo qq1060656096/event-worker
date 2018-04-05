@@ -83,8 +83,6 @@ class ConfigBase
      */
     public function get($name)
     {
-        var_dump($this->getDefaultPrefix());
-        var_dump($this->getFileName());
         return Config::get($name, $this->getDefaultPrefix(), $this->getFileName());
     }
 }
