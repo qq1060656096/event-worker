@@ -1,10 +1,10 @@
 <?php
-namespace Wei\EventWork\Exception;
+namespace Zwei\EventWork\Exception;
 
 /**
  * 参数异常
  * Class ParamException
- * @package Wei\EventWork\Exception
+ * @package Zwei\EventWork\Exception
  */
 class ParamException extends BaseException
 {

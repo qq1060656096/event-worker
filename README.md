@@ -41,7 +41,81 @@
 ## Event Worker使用demo[Event-Worker-Simple](https://github.com/qq1060656096/event-worker-simple/tree/develop)
 
 
-# 事件发送demo
+## 使用示例(use)
+> 1. 我们在"D:\phpStudy\WWW\php7"文件夹下中创建"event-demo"文件夹作为我们我项目目录
+> 2. 现在我们已经创建好了"D:\phpStudy\WWW\php7\event-demo"文件夹
+> 3. 创建数据库连接配置文件"config/bao-loan.yml"并加入以下内容
+
+```yml
+# 数据库配置
+DB_HOST: "localhost" # 主机
+DB_PORT: 3306 # 端口
+DB_USER: "root" # 用户名
+DB_PASS: "root" # 密码
+DB_NAME: "demo" # 数据库名
+DB_TABLE_PREFIX: "" # 表前缀
+DB_CHARSET: "utf8" # 设置字符编码,空字符串不设置
+DB_SQLLOG: false # 是否启用sql调试
+```
+
+> 4. 创建event-workp配置文件"config/event-worker.conf.yml"并加入以下内容
+```yml
+# 事件列表
+events:
+  BUY_PRODUCT: 1 # 用户购买产品
+
+# 模块列表
+modules:
+  user_buy_module: # docker 模块
+    class: "\\Zwei\\EventWork\\Tests\\Demo\\DockerModule" # 调用类
+    callback_func: "run" # 调用方法
+    listen_events: # 监听事件列表
+      - BUY_PRODUCT
+```
+
+> 5. 在项目目录下创建"composer.json"文件并加入以下内容
+```json
+{
+	"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/qq1060656096/event-worker.git"
+        }
+    ],
+	"require": {
+		"zwei/event-work": "dev-1.1.dev"
+	}
+}
+```
+
+> 6. 执行"composer install"安装
+
+> 7. 创建"EventWorkerRun.php"并加入以下内容
+```php
+<?php
+
+switch (true) {
+    // 参数错误
+    case empty($argv[1]):
+        throw new \Exception('The module name cannot be empty.');
+        break;
+    // 请传入引入composer autoload.php
+    case empty($argv[2]):
+        $composerAutoload = \Zwei\ComposerVendorDirectory\ComposerVendor::getDir().'/autoload.php';
+        if (!file_exists($composerAutoload)) {
+            $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
+            throw new Exception($errorMsg);
+        }
+        break;
+    default:
+        list($moduleName, $composerAutoload) = [$argv[1], $argv[2]];
+        break;
+}
+require $composerAutoload;
+\Zwei\EventWork\EventWorker::run($moduleName);
+```
+
+> 8. 创建"sendEvent.php"并加入以下内容
 ```php
 <?php
 $sendData = [
@@ -50,8 +124,8 @@ $sendData = [
     'couponId' => 0,// 优惠券id
     'uid' => 10,//购买用户
 ]; 
-//发送产品购买事件
-\Wei\EventWork\EventSend::send('product_buy', $sendData);
+// 用户购买产品
+\Zwei\EventWork\EventSend::send('BUY_PRODUCT', $data);
 ```
 
 # 单元测试使用
@@ -60,3 +134,5 @@ $sendData = [
 - --bootstrap引导测试: phpunit --bootstrap vendor/autoload.php tests/
 - --bootstrap引导测试: phpunit --bootstrap tests/TestInit.php tests/
 
+D:\phpStudy\php\php-7.0.12-nts\php.exe vendor\phpunit\phpunit\phpunit --bootstrap tests/TestInit.php tests/EventTest.php
+D:\phpStudy\php\php-7.0.12-nts\php.exe vendor\phpunit\phpunit\phpunit --bootstrap tests/TestInit.php tests/EventWorkTest.php

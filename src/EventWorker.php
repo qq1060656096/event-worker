@@ -1,15 +1,17 @@
 <?php
-namespace Wei\EventWork;
-use Wei\BriefDB\Common\Composer;
-use Wei\EventWork\Exception\ParamException;
+namespace Zwei\EventWork;
+
+use Zwei\EventWork\Config\EventConfig;
+use Zwei\EventWork\Config\EventModuleConfig;
+use Zwei\EventWork\Event;
 
 
 /**
  * 事件消费者(事件工作者)
  * Class EventWorker
- * @package Wei\EventWork
+ * @package Zwei\EventWork
  */
-class EventWorker extends Base
+class EventWorker
 {
     /**
      * 获取当前时间戳
@@ -23,14 +25,14 @@ class EventWorker extends Base
     /**
      * 输出开始运行信息
      *
-     * @param string $moduleKey 模块信息
+     * @param string $moduleName 模块名
      */
-    public static function outputStartRunInfo($moduleKey)
+    public static function outputStartRunInfo($moduleName)
     {
         $date   = date('Y-m-d H:i:s');
         $str = <<<str
 
- start module: $moduleKey
+ start module: $moduleName
  start time: $date
  
 str;
@@ -38,17 +40,21 @@ str;
     }
     /**
      * 运行模块
-     * @param string $moduleKey 模块key
+     * @param string $moduleName 模块名
      */
-    public static final function run($moduleKey)
+    public static final function run($moduleName)
     {
-        $event  = new Event($moduleKey);
         // 输出开始运行信息
-        self::outputStartRunInfo($moduleKey);
+        self::outputStartRunInfo($moduleName);
+        $eventConfig        = new EventConfig();
+        $eventModuleConfig  = new EventModuleConfig();
+        $eventConfig->validateEvents();// 验证事件是否配置正确
+        $eventModuleConfig->validateModule($eventConfig);// 验证模块是否配置正确
 
-        $class      = EventConfig::getModuleClass($moduleKey);
-        $callback   = EventConfig::getModuleCallback($moduleKey);
-        $oldTime = self::microtime_float();
+        $event              = new Event($moduleName, $eventConfig, $eventModuleConfig);
+        $class              = $eventModuleConfig->getModuleClass($moduleName);
+        $callbackFunc       = $eventModuleConfig->getModuleCallbackFunc($moduleName);
+        $oldTime            = self::microtime_float();
         while (true) {
             // 每个多少秒运行一次
             $sleepTime = 0.5;// 0.5秒
@@ -61,17 +67,16 @@ str;
             $oldTime = $nowTime;
 
             $eventLogExecLists = $event->getExecLogs();
-            foreach ($eventLogExecLists as $eventKey => $eventLogLists) {
+            foreach ($eventLogExecLists as $eventName => $eventLogLists) {
                 foreach ($eventLogLists as $key => $eventRaw) {
                     try{
                         // 处理事件
                         $obj    = new $class();
                         $data   = json_decode($eventRaw['data'], true);
-                        if (call_user_func_array([$obj, $callback], [$eventKey, $data, $eventRaw])) {
-                            $event->doCallback($eventKey, [$eventRaw['id']]);
+                        if (call_user_func_array([$obj, $callbackFunc], [$eventName, $eventRaw])) {
+                            $event->doCallback($eventRaw['event'], [$eventRaw['id']]);
                         }
                     } catch (\Exception $e) {
-                        echo $e;
                         throw $e;
                     }
                 }

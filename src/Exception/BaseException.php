@@ -1,10 +1,10 @@
 <?php
-namespace Wei\EventWork\Exception;
+namespace Zwei\EventWork\Exception;
 
 /**
  * 异常基类
  * Class BaseException
- * @package Wei\EventWork\Exception
+ * @package Zwei\EventWork\Exception
  */
 class BaseException extends \Exception
 {

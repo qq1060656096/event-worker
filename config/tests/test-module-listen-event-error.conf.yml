@@ -1,0 +1,20 @@
+# 事件列表
+events:
+  APP_CREATE: 1 # 创建应用
+  APP_START: 2 # 启用应用
+  APP_STOP: 3 # 停止应用
+  APP_DELETE: 4 # 删除应用
+  USER_FORGET: 5 # 用户忘记密码
+  USER_REGISTER: 6 # 用户注册
+
+# 模块列表
+modules:
+  docker_module: # docker 模块
+    class: "\\Zwei\\EventWork\\Demo\\Docker" # 调用类
+    callback_func: "test" # 调用方法
+    listen_events: # 监听事件列表
+      - APP_CREATE
+      - APP_START
+      - APP_STOP
+      - APP_DELETE
+      - ERRO_EVENT

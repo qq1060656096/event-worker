@@ -1,0 +1,39 @@
+#  ------ 分割线 -------
+# 计划任务列表
+crons:
+  demo_cron: # cron 计划任务名字唯一
+    class: "\\Wei\\EventWork\\Demo\\DemoCron" # 调用类
+    callback_func: "run" # 调用方法
+
+# 事件列表
+events:
+  APP_CREATE: 1 # 创建应用
+  APP_START: 2 # 启用应用
+  APP_STOP: 3 # 停止应用
+  APP_DELETE: 4 # 删除应用
+  USER_FORGET: 5 # 用户忘记密码
+  USER_REGISTER: 6 # 用户注册
+  BUY_PRODUCT: 7 # 用户购买产品
+
+# 模块列表
+modules:
+  docker_module: # docker 模块
+    class: "\\Zwei\\EventWork\\Tests\\Demo\\DockerModule" # 调用类
+    callback_func: "run" # 调用方法
+    listen_events: # 监听事件列表
+      - APP_CREATE
+      - APP_DELETE
+      - BUY_PRODUCT
+  comment_module: # 评论统计
+    class: "\\Zwei\\EventWork\\Demo\\CommentModule" # 调用类
+    callback_func: "increaseCommentNum" # 调用方法
+    listen_events: # 监听事件列表
+      - APP_CREATE
+      - APP_START
+      - APP_STOP
+  user_send_email_module: # 用户发送邮件
+    class: "\\Zwei\\EventWork\\Demo\\SendMailModule" # 调用类
+    callback_func: "increaseCommentNum" # 调用方法
+    listen_events: # 监听事件列表
+      - USER_FORGET
+      - USER_REGISTER
