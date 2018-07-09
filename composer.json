@@ -1,6 +1,5 @@
 {
   "name": "zwei/event-worker",
-  "type": "library",
   "description": "The Zwei event-worker package.",
   "keywords": ["cqrs", "event worker", "cli", "simple queue"],
   "license": "BSD-3",

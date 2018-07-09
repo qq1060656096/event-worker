@@ -20,6 +20,5 @@ class EventTest extends BaseTestCase
         $eventModuleConfig  = new EventModuleConfig();
         $obj    = new Event('docker_module', $eventConfig, $eventModuleConfig);
         $lists  = $obj->getExecLogs();
-        print_r($lists);
     }
 }
