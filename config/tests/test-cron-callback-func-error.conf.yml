@@ -1,0 +1,5 @@
+# 计划任务列表
+crons:
+  demo_cron: # cron 计划任务名字唯一
+    class: "\\Wei\\EventWork\\Demo\\DemoCron" # 调用类
+
