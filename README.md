@@ -52,7 +52,7 @@ $sendData = [
 ```
 
 ## Event Worker使用示例
-> 使用示例[Event Worker App](https://github.com/qq1060656096/event-worker-app/tree/develop)
+> 使用示例[Event Worker App](https://github.com/qq1060656096/event-worker-app)
 
 ## 数据库配置文件"config/bao-loan.yml"
 
